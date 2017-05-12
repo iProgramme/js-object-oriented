@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>01</title>
+</head>
+
+<body>
+	<div></div>
+	<script>
+		var obj = { name: "zs" }
+		function foo(obj) {
+			obj.name = "lll"
+			obj = { name: "zs" }
+		}
+		foo(obj)
+		console.log(obj.name)  // lll
+
+		console.log([] == ![]) // true
+		console.log({} == !{}) // false
+	</script>
+</body>
+
+</html>

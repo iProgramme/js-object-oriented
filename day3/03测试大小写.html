@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试大小写驼峰法</title>
+</head>
+<body>
+    <span style="text-transform:capitalize">get-element-by-id</span>
+    <script>
+        var str = "get-element-by-id"
+        var p = document.createElement("p")
+        p.innerHTML = str
+        document.body.appendChild(p)
+        p.style.textTransform = "capitalize"
+        var arr = p.innerHTML.split("-")
+        var tuofeng = arr.join("")
+        console.log(document.querySelector("span").innerHTML)
+
+        // 结论，通过css改变的元素的大小写，在用js获取的时候
+        // js仍然获取的是原字符串，而不是css改变后的字符串
+    </script>
+</body>
+</html>

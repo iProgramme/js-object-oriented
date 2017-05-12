@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>面向函数</title>
+	<style>
+		div{
+			height: 300px
+		}
+	</style>
+</head>
+<body>
+	<div></div>
+	<div></div>
+	<div></div>
+	<script>
+		function setStyles(arr,style,value) {
+			for (var i = 0; i < arr.length; i++) {
+				arr[i].style[style+""] = value
+			}
+		}   // 最好还是用回调函数
+		setStyles(document.querySelectorAll("div"),"backgroundColor","red")
+
+
+		// 关于send
+		var xhr = new XMLHttpRequest();
+		xhr.open("get","data.json",true)  // false为同步，true为异步
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState == 4) {
+				if (xhr.status>=200&&xhr.status<300||xhr.status==304) {
+					// 则是成功的
+					var data = xhr.responseText;
+					
+					console.log(data)
+				}
+			}
+		}
+		xhr.send()   // 最好是在 onreadystatechange 之后再 send
+	</script>
+</body>
+</html>

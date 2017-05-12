@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>01</title>
+</head>
+<body>
+<div id="dv">
+	<p></p>
+	<span></span>
+	<a href="#">奥斯卡的家伙</a>
+</div>
+	<script>
+		var p = 'asldkjalskdj'
+		p = p.slice(2,-1) // 一个参数的时候，表示截取到最后一个   
+		console.log(p)
+		var arr = [2,3,4,5,6]
+		arr.forEach(function(a,b,c){
+			// console.log(this) // 这是window
+			console.log(c)   // 指向数组本身
+		})
+
+		
+	</script>
+</body>
+</html>

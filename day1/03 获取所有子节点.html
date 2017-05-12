@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>01</title>
+</head>
+<body>
+<div id="dv">
+	<p></p>
+	<span></span>
+	<a href="#">奥斯卡的家伙</a>
+</div>
+	<script>
+		
+
+		// map 方法
+		// var div = document.getElementById('dv')
+		// var childs = div.childNodes;   // 必须把这个childs 转化成真数组
+		// var p = []
+		// for (var i = 0; i < childs.length; i++) {
+		// 	p[i] = childs[i]
+		// }
+		// console.log(p)
+		// var ppp = p.map(function(e,i){
+		// 	if (e.nodeType == 1) {
+		// 		return e
+		// 	}
+		// })
+		// console.log(ppp)
+		function () {  }
+
+		// 这个是新的方式来获取所有的子节点
+		var arr = []
+		var div2 = document.getElementById('dv')
+		for (var i = div2.firstChild; i ; i=i.nextSibling) {
+			if (i.nodeType ==1) {
+				arr.push(i)
+			}
+		}
+		console.log(arr)
+	</script>
+</body>
+</html>

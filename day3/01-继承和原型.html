@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>继承和原型</title>
+</head>
+<body>
+    <script>
+        function app (name){
+            this.name = name
+        }
+        var p = new app("la")
+        console.log(p)
+        // 最好通过原型加的属性或方法，不要和函数本身里面的属性和方法冲突，否则只会访问到函数里面的属性，而不会访问到原型上面定义的那个属性和方法
+        // 如果方法或属性相同，则在调用原型上的犯法的时候必须加上 __proto__ ，然后再点出该方法 见下面28 和30行
+        app.prototype.name1 = function(){  //  --------------这个是扩展原型的方式---------------
+            // this      // 这个this 指的是 app.prototype 这个对象 ，即就是原型对象本身
+            console.log(this.__proto__)  // 这就访问到原型对象的原型对象 ， 这个不再具有原型对象
+        } // 这个是直接在原型对象上面添加属性或者方法。意义：放在重复的代码在内存中重复出现
+        function getPrototype(obj){
+            return obj.__proto__ || obj.constructor.prototype   // 兼容处理，谷歌等，IE10-
+        }
+        console.log(p.__proto__ == getPrototype(p))   // 
+        console.log(p.__proto__)
+        console.log("\n") 
+        console.log(p.__proto__.name1())   
+        console.log("\n") 
+        console.log(p.name1())
+
+        
+        // 由于原型指向的是一个对象的地址，所以可以用以下的方法来事项完全相同的效果
+        // ----------------替换该对象------------------
+        app.prototype = {
+            constructor:app,  // 如果这个有必要，则必须手动加上
+            say:function(){
+                console.log("替换的方式改变")
+            }
+        }
+    </script>
+</body>
+</html>
