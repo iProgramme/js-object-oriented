@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>02-构造函数的原型链</title>
+</head>
+<body>
+    <script>
+        var name = "全局的name"
+        var obj = {
+            name:"哈哈"
+        }
+        function fn(n,m){
+            console.log(n+m)
+            console.log(this.name)
+        }
+        fn.call(obj,1,2)  // 会把 1，2 传给 n，m
+        fn.apply(obj,[3,4])  // 这个是把后面的参数放在数组里面传进去
+        fn(3,6)  
+        // 证明了 每次使用那两个方法的时候，才会改变里面的this 指向,并没有从根本上永久改变其指向
+        // 并且，仅仅在调用那两个方法的时候，才有 fn 这个属性，而不是永久添加上这个属性
+
+        // 思考：会不会改变数组里面的方法
+        var likeArray = {
+            0: 1,
+            1: 2,
+            length: 2,
+            name: 'guoguo'
+        };
+        likeArray[ 2 ] = 3;
+        likeArray[ 3 ] = 4;
+        likeArray.length = 4;
+        console.log( likeArray );
+
+        arr = Array.prototype.slice.call( likeArray ); // 仅仅是本次调用方法里面的 this 指向 likeArray
+        var p = []
+        // p.__proto__.__proto__.slice()
+        console.log(p.__proto__.slice == Array.prototype.slice)
+        console.log( arr );
+    </script>
+</body>
+</html>

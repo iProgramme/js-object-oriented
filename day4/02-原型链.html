@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>02-对象的原型链</title>
+</head>
+<body>
+    <script>
+        // --------原型链：从任意对象出发 到 Object.prototype 之间，由一条非标准属性 __proto__ 连接起来
+        // 数组的原型链，跟构造函数的原型链差不多
+        var p = {
+            name:"qq"
+        }
+        console.log(p)  //对象本身
+        console.log(p.__proto__)  // 本身的原型，也是个空对象但不是null
+        console.log(p.__proto__ == Object.prototype)  // true
+        console.log(p.__proto__.__proto__) // 原型的原型，就是 null
+    </script>
+</body>
+</html>

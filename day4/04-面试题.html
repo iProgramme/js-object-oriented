@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>02-构造函数的原型链</title>
+</head>
+<body>
+    <script>
+        var name = 'global';
+        obj = {
+            name: 'obj',
+            foo: function(callback) {
+                console.log(this.name); // obj 
+                callback(); // global   // var 的全局变量，就是 window 的属性
+                arguments[0](); // undefined // 相当于数组的方法调用，this指向 arguments[0]
+                fn(); // global 
+            }
+        };
+        function fn() {
+            console.log(this.name);
+        }
+        obj.foo(fn);
+    </script>
+</body>
+</html>

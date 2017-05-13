@@ -1,0 +1,430 @@
+<html>
+  <head>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>i5ting_ztree_toc:note</title>
+		<link href="toc/style/github-bf51422f4bb36427d391e4b75a1daa083c2d840e.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/style/github2-d731afd4f624c99a4b19ad69f3083cd6d02b81d5.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/css/zTreeStyle/zTreeStyle.css" media="all" rel="stylesheet" type="text/css"/>
+	  <style>
+		pre {
+		    counter-reset: line-numbering;
+		    border: solid 1px #d9d9d9;
+		    border-radius: 0;
+		    background: #fff;
+		    padding: 0;
+		    line-height: 23px;
+		    margin-bottom: 30px;
+		    white-space: pre;
+		    overflow-x: auto;
+		    word-break: inherit;
+		    word-wrap: inherit;
+		}
+
+		pre a::before {
+		  content: counter(line-numbering);
+		  counter-increment: line-numbering;
+		  padding-right: 1em; /* space after numbers */
+		  width: 25px;
+		  text-align: right;
+		  opacity: 0.7;
+		  display: inline-block;
+		  color: #aaa;
+		  background: #eee;
+		  margin-right: 16px;
+		  padding: 2px 10px;
+		  font-size: 13px;
+		  -webkit-touch-callout: none;
+		  -webkit-user-select: none;
+		  -khtml-user-select: none;
+		  -moz-user-select: none;
+		  -ms-user-select: none;
+		  user-select: none;
+		}
+
+		pre a:first-of-type::before {
+		  padding-top: 10px;
+		}
+
+		pre a:last-of-type::before {
+		  padding-bottom: 10px;
+		}
+
+		pre a:only-of-type::before {
+		  padding: 10px;
+		}
+
+		.highlight { background-color: #ffffcc } /* RIGHT */
+		</style>
+  </head>
+  <body>
+	  <div>
+				<div style='width:25%;'>
+						<ul id="tree" class="ztree" style='width:100%'>
+
+						</ul>
+				</div>
+        <div id='readme' style='width:70%;margin-left:20%;'>
+          	<article class='markdown-body'>
+            	<p><p style="border-bottom:1px solid #ccc;font-size:2.5em;font-weight:bold;">前端JS高级第4天</p></p>
+<hr>
+
+<h1 id="-">今天内容</h1>
+<h2 id="-">扩展继承方式</h2>
+<h3 id="es5-">ES5方法</h3>
+<p>var child = Object.create( parent, [对象] );</p>
+<p>替换原型 来实现继承的，也就说 child对象的原型就是 parent</p>
+<p>在通过第二个参数 设置对象属性时，</p>
+<p>writable、enumerable、configurable 这些属性 默认都是 false。</p>
+<pre><code class="lang-javascript">var parent = {
+    talk: function(){
+        console.log( &#39;talking&#39; );
+    }
+};
+
+var child = Object.create( parent, {
+    name: {
+        value: &#39;guoguo&#39;,
+        writalbe: false, // 可写性 如果为false 表示该属性 是只读的
+        enumerable: false, // 可以通过for in遍历到的属性 是 可枚举的
+        configurable: false // 如果该属性值为false，在重新配置对象属性的 writalbe enumerable configurable就会报错
+    }
+} );
+
+Object.defineProperty( child, &#39;name&#39;, {
+    writable: true
+} ); // 报错的
+
+child.name = &#39;jingjing&#39;; // 坑? 不会报错，默默的失败
+console.log( child.name ); // guoguo
+for( var k in child ){
+    console.log( k );
+}
+</code></pre>
+<h3 id="object-defineproperty">Object.defineProperty</h3>
+<h3 id="object-defineproperties">Object.defineProperties</h3>
+<h2 id="-">原型链</h2>
+<p>默认 对象 都有原型，而且可以通过 对象本身 或者 其构造函数去获取。而原型的本质 也是 对象。</p>
+<p>那么 原型也具有 非标准属性__proto__ 找到 原型的原型。</p>
+<p>原型链 是有 尽头，在原型链的末尾 是Object.prototype</p>
+<p>默认 原型的原型 就是 Object.prototype</p>
+<p>举个栗子</p>
+<pre><code class="lang-javascript">var obj = {}; // Object
+// obj -&gt; Object.prototype -&gt; null
+console.log( obj.__proto__ );
+console.log( obj.__proto__  == Object.prototype ); // true
+console.log( obj.__proto__.__proto__ ); // null
+
+var arr = [];
+// arr -&gt; Array.prototype -&gt; Object.prototype -&gt; null
+console.log( arr.__proto__ );
+console.log( arr.__proto__ == Array.prototype );
+console.log( arr.__proto__.__proto__ == Object.prototype );
+
+var date = new Date();
+// date -&gt; Date.prototype -&gt; Object.prototype -&gt; null
+function Parent(){
+
+}
+var p = new Parent();
+// p -&gt; Parent.prototype -&gt; Object.prototype -&gt; null
+function Child(){}
+Child.prototype = p;
+var c = new Child();
+// c -&gt; Child.prototype( p ) -&gt; Parent.prototype -&gt; Object.prototype -&gt; null
+</code></pre>
+<h3 id="-">概念</h3>
+<p>从任意对象出发到Object.prototype之间，存在一条由非标准属性__proto__连接起来的，并且体现对象的继承层次关系的链式结构。该结构被叫做 对象的原型链。</p>
+<h3 id="-">属性搜索原则</h3>
+<p>当对象访问属性时,</p>
+<ul>
+<li>首先在当前对象本身上去查找，如果找到就返回属性值，并停止查找；</li>
+<li>如果没有找到，就向其原型上查找，如果找到就返回属性值，并停止查找；</li>
+<li>如果还是没有找到，就继续向原型的原型上查找，直到Object.prototype;</li>
+<li>如果找到就返回属性值；如果没有找到呢，就返回undefined。</li>
+</ul>
+<h3 id="instanceof-">instanceof运算规则</h3>
+<p>instance 实例</p>
+<p>of 的</p>
+<p>&lt;对象&gt; instanceof 函数 判断该对象是否是指定函数的实例</p>
+<p>规则：</p>
+<p>如果 函数的原型属性 出现在 对象的原型链上，那么 表达式的返回值 是 true；否则，就是false。</p>
+<h2 id="-">函数</h2>
+<h3 id="-js-">在JS中函数是一等公民</h3>
+<p>是因为 在js中 函数的使用方式 非常灵活，有些高级写法 都是由于函数的灵活性产生的。</p>
+<ol>
+<li>具有双重身份：既是 函数 也是 对象</li>
+<li>可以嵌套</li>
+<li>可以作为另一个函数的参数--回调函数</li>
+<li>可以作为另一个函数的返回值--闭包</li>
+<li>可以作为对象的属性值--对象的方法</li>
+<li>可以限定作用域--函数作用域 或者叫做 局部作用域</li>
+</ol>
+<h3 id="-">函数的创建</h3>
+<ol>
+<li>声明式</li>
+</ol>
+<pre><code class="lang-javascript">function fn( param ){
+    // statement
+}
+</code></pre>
+<ol>
+<li>表达式</li>
+</ol>
+<pre><code class="lang-javascript">var fn = function( param ){
+    // statement
+};
+</code></pre>
+<p>两者区别：前者 会有函数名和函数体的提升；而后者 只会将函数名提升（即变量名的提升）</p>
+<ol>
+<li>Function构造函数 -- 不推荐使用Function来创建函数</li>
+</ol>
+<p>在js中，所有的函数 都是 Function的实例。</p>
+<p>var fnName = new Function( [arg1~argN], [body] );</p>
+<ul>
+<li>[arg1~argN] 可选参数，类型为 字符串，含义：表示定义生成函数的形参部分</li>
+<li>[body] 可选参数，类型为 字符串，含义：表示定义生成函数的函数体部分</li>
+</ul>
+<p>在实际使用时，</p>
+<ul>
+<li>如果没有传入任何实参，那么就创建一个没有的形参列表 并且函数体部分没有任何代码的函数</li>
+<li>如果传入一个实参，相当于 指定了函数体部分</li>
+<li>否则，最后一个参数 是 函数体部分，其他都是定义函数的形参</li>
+</ul>
+<p>举个栗子</p>
+<pre><code class="lang-javascript">var fn1 = new Function( &#39;console.log( 1 );&#39; );
+fn1();
+var fn2 = new Funciton( &#39;n&#39;, &#39;console.log( n );&#39; )
+// ==
+// function fn2( n ){
+//     console.log( n );
+// }
+fn2( 2 );
+</code></pre>
+<h2 id="-">函数的调用模式</h2>
+<p>目的：为了区分函数不同调用模式下的this指向问题</p>
+<p>要认清this的指向，首先 要确定this属于哪个函数；然后再确定该函数的调用模式，最后通过函数调用模式来确定this。</p>
+<h3 id="-">普通函数的执行模式</h3>
+<p>就是 通过函数的名字 或者 参数 获取到函数体的引用，然后加上 一对圆括号 来执行函数。</p>
+<p>在该模式下，this -&gt; window对象</p>
+<pre><code class="lang-javascript">function fn(){
+    console.log( this );
+}
+fn(); // window
+function foo( callback ){
+    callback(); // window
+} 
+
+foo( fn );
+</code></pre>
+<h3 id="-">构造函数执行模式</h3>
+<p>将函数当作构造函数来实例化对象，此时函数的调用模式 为 构造函数执行模式。</p>
+<p>在该模式下，this -&gt; 要实例化的对象</p>
+<pre><code class="lang-javascript">function init(){
+    this.name = &#39;init&#39;;
+    console.log( this );
+}
+var i = new init(); // init实例化的对象
+</code></pre>
+<h3 id="-">方法调用模式</h3>
+<p>将一个函数 赋值给 对象的属性，然后通过对象属性来调用函数，此时属于方法调用模式；</p>
+<p>在该模式下，this -&gt; 方法的调用者</p>
+<pre><code class="lang-javascript">function fn(){
+    console.log( this );
+}
+
+var obj = {
+    foo: fn,
+    foo1: function(){
+        console.log( this );
+    }
+};
+
+obj.foo();
+obj.foo1();
+</code></pre>
+<h3 id="-call-apply-">上下文模式（call/apply模式）</h3>
+<p>可以该函数在执行时 内部的this指向</p>
+<ol>
+<li><p><fn>.call( thisObj, arg1 ~ argN );</p>
+</li>
+<li><p>thisObj : 表示执行函数fn在执行时 this 的新指向；必须是对象类型，不是会尝试隐式转换，若失败就会抛出异常。
+  如果传入的实参值 是 null | undefined，此时在 fn执行时，内部this -&gt; window对象。</p>
+</li>
+<li>arg1 ~ argN 可选的形参列表，给fn执行时 传入实参。</li>
+</ol>
+<p>举个栗子</p>
+<pre><code class="lang-javascript">var name = &#39;global&#39;;
+var obj = {
+    name: &#39;obj&#39;
+};
+
+function fn( n, m ){
+    // this = obj; error
+    console.log( m + n );
+    console.log( this.name );
+}
+
+fn(); // global
+fn.call( obj, 1, 2 ); // obj
+</code></pre>
+<ol>
+<li><fn>.apply( thisObj, &lt;[数组]&gt; )</li>
+<li>thisObj : 表示执行函数fn在执行时 this 的新指向；必须是对象类型，不是会尝试隐式转换，若失败就会抛出异常。
+  如果传入的实参值 是 null | undefined，此时在 fn执行时，内部this -&gt; window对象</li>
+<li>[数组]： 可选，通过数组元素给fn执行时传入实参。</li>
+</ol>
+<p>举个栗子</p>
+<pre><code class="lang-javascript">var name = &#39;global&#39;;
+var obj = {
+    name: &#39;obj&#39;
+};
+
+function fn( n, m ){
+    // this = obj; error
+    console.log( m + n );
+    console.log( this.name );
+}
+
+fn(); // global
+fn.apply( obj, [ 1, 2 ] ); // obj
+</code></pre>
+<ol>
+<li>call 和 apply 的异同</li>
+</ol>
+<p>相同点：a 都可以通过第一个参数 改变this； b 当函数调用call 或 apply方法时 都会立即执行函数</p>
+<p>不同点：前者 通过可选的形参列表 给函数传入实参； 后者 通过可选的数组对象 给函数 传入实参。</p>
+<h3 id="-">上下文模式的应用</h3>
+<ol>
+<li><p>改变this</p>
+</li>
+<li><p>实现一种继承方式-借用构造函数</p>
+</li>
+</ol>
+<pre><code class="lang-javascript">function Parent( name, age, gender ){
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+}
+function Child(  name, age, gender, address ){
+    Parent.call( this, name, age, gender );
+    this.address = address;
+}
+
+var c = new Child( &#39;child&#39;, 19, &#39;girl&#39;, &#39;beijing china&#39; );
+console.log( c );
+</code></pre>
+<ol>
+<li><p>借调方法</p>
+</li>
+<li><p>伪数组对象借调数组方法</p>
+</li>
+</ol>
+<pre><code class="lang-javascript">var likeArray = {
+    0: 1,
+    1: 2,
+    length: 2,
+    name: &#39;guoguo&#39;
+};
+
+likeArray[ 2 ] = 3;
+likeArray[ 3 ] = 4;
+likeArray.length = 4;
+
+console.log( likeArray );
+</code></pre>
+<ul>
+<li>伪数组 转换成 真数组</li>
+</ul>
+<pre><code class="lang-javascript">var likeArray = {
+    0: 1,
+    1: 2,
+    length: 2,
+    name: &#39;guoguo&#39;
+};
+
+likeArray[ 2 ] = 3;
+likeArray[ 3 ] = 4;
+likeArray.length = 4;
+
+console.log( likeArray );
+
+var arr;
+
+// arr = [];
+
+// arr.push.apply( arr, likeArray );
+
+arr = Array.prototype.slice.call( likeArray );
+
+console.log( arr );
+</code></pre>
+<ul>
+<li>将数组元素 或 伪数组元素 作为函数的实参</li>
+</ul>
+<pre><code class="lang-javascript">var arr1 = [ 1, 2 ];
+var arr2 = [ 3, 4 ];
+
+// arr1 = arr1.concat( arr2 );
+arr1.push.apply( arr1, arr2 );
+
+console.log( arr1 );
+</code></pre>
+<pre><code class="lang-javascript">var arr = [ 1, 20, 40, 21, 34 ];
+var max = arr[ 0 ];
+for( var i = 1; i &lt; arr.length; i++ ){
+    if( max &lt; arr[ i ] ){
+        max = arr[ i ];
+    }
+}
+
+var max = Math.max.apply( null, arr );
+
+console.log( max );
+</code></pre>
+<ul>
+<li>获取内置对象类型</li>
+</ul>
+<p>在开发时，可能会需要获取内置对象的类型，比如 Array等等，根据数据的类型不同，而进行不同的逻辑处理。</p>
+<p>Object.prototype.toString方法的实现，是返回对象的基本信息（包括 typeof 该对象的返回值 以及 对象的构造函数名）；
+eg：&quot;[object Object]&quot; &quot;[object Array]&quot;</p>
+<p>对象的类型命名：通常使用构造函数的名字来表示对象的类型名。也就说，对象的类型名 就是 其构造函数的名称的小写方式。</p>
+<pre><code class="lang-javascript">var obj = {};
+console.log( obj.toString() );
+function getType( obj ){
+    // null undefined
+    if( obj == null ){
+        return obj + &#39;&#39;;
+    }
+    // 如果obj是简单数据
+    /* if( typeof obj != &#39;object&#39; ){
+        return typeof obj;
+    } else { // 如果 obj 是 复杂数据
+        return Object.prototype.toString.call( obj ).slice( 8, -1 ).toLowerCase();
+    }*/
+    return typeof obj == &#39;object&#39; ?
+        Object.prototype.toString.call( obj ).slice( 8, -1 ).toLowerCase() :
+        typeof obj;
+}
+</code></pre>
+
+          	</article>
+        </div>
+		</div>
+  </body>
+</html>
+<script type="text/javascript" src="toc/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="toc/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="toc/js/ztree_toc.js"></script>
+<script type="text/javascript" src="toc_conf.js"></script>
+
+<SCRIPT type="text/javascript" >
+<!--
+$(document).ready(function(){
+    var css_conf = eval(markdown_panel_style);
+    $('#readme').css(css_conf)
+    
+    var conf = eval(jquery_ztree_toc_opts);
+		$('#tree').ztree_toc(conf);
+});
+//-->
+</SCRIPT>

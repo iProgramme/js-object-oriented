@@ -1,0 +1,151 @@
+<html>
+  <head>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>i5ting_ztree_toc:review</title>
+		<link href="toc/style/github-bf51422f4bb36427d391e4b75a1daa083c2d840e.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/style/github2-d731afd4f624c99a4b19ad69f3083cd6d02b81d5.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/css/zTreeStyle/zTreeStyle.css" media="all" rel="stylesheet" type="text/css"/>
+	  <style>
+		pre {
+		    counter-reset: line-numbering;
+		    border: solid 1px #d9d9d9;
+		    border-radius: 0;
+		    background: #fff;
+		    padding: 0;
+		    line-height: 23px;
+		    margin-bottom: 30px;
+		    white-space: pre;
+		    overflow-x: auto;
+		    word-break: inherit;
+		    word-wrap: inherit;
+		}
+
+		pre a::before {
+		  content: counter(line-numbering);
+		  counter-increment: line-numbering;
+		  padding-right: 1em; /* space after numbers */
+		  width: 25px;
+		  text-align: right;
+		  opacity: 0.7;
+		  display: inline-block;
+		  color: #aaa;
+		  background: #eee;
+		  margin-right: 16px;
+		  padding: 2px 10px;
+		  font-size: 13px;
+		  -webkit-touch-callout: none;
+		  -webkit-user-select: none;
+		  -khtml-user-select: none;
+		  -moz-user-select: none;
+		  -ms-user-select: none;
+		  user-select: none;
+		}
+
+		pre a:first-of-type::before {
+		  padding-top: 10px;
+		}
+
+		pre a:last-of-type::before {
+		  padding-bottom: 10px;
+		}
+
+		pre a:only-of-type::before {
+		  padding: 10px;
+		}
+
+		.highlight { background-color: #ffffcc } /* RIGHT */
+		</style>
+  </head>
+  <body>
+	  <div>
+				<div style='width:25%;'>
+						<ul id="tree" class="ztree" style='width:100%'>
+
+						</ul>
+				</div>
+        <div id='readme' style='width:70%;margin-left:20%;'>
+          	<article class='markdown-body'>
+            	<p><p style="border-bottom:1px solid #ccc;font-size:2.5em;font-weight:bold;">前天复习</p></p>
+<hr>
+
+<h1 id="-">主要知识点复习</h1>
+<h2 id="-">原型</h2>
+<p>原型 就是 函数的prototype属性所引用的对象。</p>
+<p>原型的本质 就是 一个对象。</p>
+<p>在声明函数时，JS解析器就会创建一个空对象，并将其赋值给函数的prototype属性。当通过该函数去实例化对象时，所创建出来的所有对象，都可以直接访问其原型对象（函数的prototype属性所指向的对象）的所有成员</p>
+<h2 id="-">获取原型</h2>
+<p>1 通过函数 <fnName>.prototype
+2 通过对象 <obj>.__proto__</p>
+<h2 id="-">原型-函数-实例关系</h2>
+<p>原型 默认有 constructor 指向 函数；负责将自己的成员 继承给 实例 father角色</p>
+<p>函数 默认有 prototype   指向 原型；负责创建实例                mother 角色</p>
+<p>对象 具有 __proto__    指向 原型；                           son 角色</p>
+<h2 id="-">继承</h2>
+<ol>
+<li><p>原型继承 --单继承</p>
+</li>
+<li><p>在原有的默认原型上扩展成员</p>
+</li>
+<li><p>替换原型</p>
+</li>
+<li><p>混入式 -- 多继承</p>
+</li>
+</ol>
+<pre><code class="lang-javascript">function extend( target ){
+    if( !target ){
+        return;
+    }
+
+    var args = arguments,
+        i = 1,
+        l = args.length;
+
+    var k, obj;
+
+    for( ; i &lt; l; i++ ){
+        obj = args[ i ];
+        for( k in obj ){
+            target[ k ] = obj[ k ];
+        }
+    }
+
+    return target;
+}
+</code></pre>
+<ol>
+<li>对象冒充</li>
+</ol>
+<pre><code class="lang-javascript">function Parent( name ){
+    this.name = name;
+}
+function Child( name ){
+    this.parent = Parent;
+    this.parent( name );
+    delete this.parent;
+}
+</code></pre>
+<ol>
+<li>Object.create( parent, [对象] );</li>
+</ol>
+
+          	</article>
+        </div>
+		</div>
+  </body>
+</html>
+<script type="text/javascript" src="toc/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="toc/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="toc/js/ztree_toc.js"></script>
+<script type="text/javascript" src="toc_conf.js"></script>
+
+<SCRIPT type="text/javascript" >
+<!--
+$(document).ready(function(){
+    var css_conf = eval(markdown_panel_style);
+    $('#readme').css(css_conf)
+    
+    var conf = eval(jquery_ztree_toc_opts);
+		$('#tree').ztree_toc(conf);
+});
+//-->
+</SCRIPT>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>01-Object-create()实现继承</title>
+</head>
+<body>
+    <script>
+        // ------------------Object-create() 是 ES5的------------------
+        var p = {
+            name1:"aa"
+        }
+        var p2 = {
+            name2:"aa"
+        }
+        var child = Object.create(p2,{
+            name:{
+                value:"kk", // 这个属性是加到 child 自己的对象上的 
+                writable:false,  // 表示这个 name 属性不可改变 只读
+                enumerable:false, // 表示不可被枚举
+                configurable:false  // 不可配置
+                // 这三个的默认值都是 false
+            }
+        })   // 这个 p2 是直接加到 对象的原型上的
+        child.name = "aaa"   // 这个不会改变 child 的属性和值
+        console.log(child)
+    </script>
+</body>
+</html>
