@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>03-原型链</title>
+</head>
+<body>
+    <script>
+        function app (){}
+        var p = new app()
+        console.group("这是第一组")
+        console.log(p.prototype) // undefined  因为 new 之后，这就是一个对象 并且指向 app() 这个函数，所以 p 只有 __proto__ 属性
+        // 注意，打印 app 和打印 p ，结果是不一样的 
+        console.log(p.__proto__ == app.prototype)
+        // app 作为一个对象，就有 __proto__ 属性，指向 Function.prototype
+        console.log(app.__proto__ == Function.prototype)   // true
+        console.groupEnd()
+        // 其作为一个构造函数，就有 prototype 属性，指向一个对象，这个对象的 __proto__ 就指向 Object.prototype
+        console.log(app.prototype.__proto__ == Object.prototype)
+
+        // 也就是说 Function.prototype.__proto__ 指向 Object.prototype
+        console.log(app.__proto__.__proto__ == Object.prototype)
+        console.log(Function.prototype.__proto__ == Object.prototype)
+    </script>
+
+</body>
+</html>

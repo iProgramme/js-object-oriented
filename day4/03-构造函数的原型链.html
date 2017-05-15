@@ -13,6 +13,9 @@
         function app(name){
             this.name = name
         }
+        // 同时具有 __proto__ 和 prototype 属性
+        console.log( app.__proto__ ) // 指向 Function  function 类型
+        console.log( app.prototype ) // 指向 原型对象  Object 类型
         var p = new app("haha")
         console.log(p)  // 实例
         console.log(p.__proto__)  // 实例的原型
@@ -31,7 +34,9 @@
         // 判断此时的原型链
         console.log(obj.__proto__.__proto__.__proto__ == Object.prototype) // true
         // obj 是 app2() 的实例
-        console.log( obj.__proto__.__proto__ == app2.prototype.__proto__  ) //true
+        console.log("aaa")
+        console.log( obj.__proto__.__proto__ == app2.prototype.__proto__ ) //true
+        
         console.log( obj.__proto__.__proto__ == app.prototype ) // true
 
 
