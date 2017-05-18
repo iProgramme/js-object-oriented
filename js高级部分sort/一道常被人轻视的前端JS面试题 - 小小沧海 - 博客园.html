@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)http://www.cnblogs.com/xxcanghai/p/5189353.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script async="" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/analytics.js.下载"></script><script type="text/javascript" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/encoder.js.下载"></script><script src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/hm.js.下载"></script><script async="" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/analytics.js(1).下载"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/bundle-SimpleMemory.css">
+<link type="text/css" rel="stylesheet" href="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/223719.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/bundle-SimpleMemory-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/xxcanghai/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/xxcanghai/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/xxcanghai/wlwmanifest.xml">
+<script src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/jquery.js.下载" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'xxcanghai', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/blog-common.js.下载" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+<!--PageBeginHtml Block Begin-->
+
+<span style="display:none;">页首Html代码</span>
+
+<script>
+//我的基础库
+window.jch=window.jch||{};
+jch.addScript=function (url,callback){
+  var script = document.createElement("script");
+  script.setAttribute("src", url);
+  if(typeof(callback)=="function"){
+    jch.addEvent(script,"load",callback,false);
+  }
+  document.getElementsByTagName("head")[0].appendChild(script);
+}
+jch.addStyle=function (url,callback){
+  var link = document.createElement("link");
+  link.setAttribute("href", url);
+  link.setAttribute("rel", "stylesheet");
+  link.setAttribute("type", "text/css");
+  if(typeof(callback)=="function"){
+    jch.addEvent(link,"load",callback,false);
+  }
+  document.getElementsByTagName("head")[0].appendChild(link);
+}
+jch.addEvent=function(element, type, listener, useCapture) {
+  var w3cType = type.replace(/^on/i, "");
+  var ieType = "on" + w3cType;
+  if (document["addEventListener"] != undefined) {
+    element.addEventListener(w3cType, listener, useCapture);
+  } else {
+    element.attachEvent(ieType, listener);
+  }
+}
+</script>
+
+<script>
+//CNZZ统计代码
+//$("head").append($("<link href='//files.cnblogs.com/files/xxcanghai/bootstrap.css' type='text/css' rel='stylesheet'/>"));
+$.getScript("//s11.cnzz.com/z_stat.php?id=1255422624&web_id=1255422624");
+</script>
+
+<script>
+  //谷歌统计代码
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69985128-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<script>
+//百度统计
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?584bbcbd39e520e722cb5ba73f543ac1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<script>
+$(function(){
+  console.info("hello! welcome xxcanghai blog");
+
+  //使用window writer发布的日志，图片不能自适应，去除相应宽高设定
+  $("#cnblogs_post_body img").each(function(){ 
+    $(this).removeAttr("width").removeAttr("height"); 
+  });
+
+  //将测试结果表格美化
+  $(".jTableNaviTest td").each(function(i,td){
+    var $td=$(td);
+    if($.trim($td.text()).toUpperCase()=="N"){
+      $td.addClass("jTableBad");
+    } else if($.trim($td.text()).toUpperCase()=="Y"){
+      $td.addClass("jTableGood");
+    }
+  });
+
+  //自动生成博客目录
+  (function createMenu() {
+    var hdTag = "h";
+    var hdMax = 2;
+    var hdTree = {
+        tag: "root",
+        element: null,
+        sub: []
+    };
+    var $article = $("#cnblogs_post_body");//要采集的正文
+    var $menuBox = $("#leftcontentcontainer");//右侧菜单盒子
+    var $articleMenuBox = $("#cnblogs_post_body");//正文放置菜单盒子
+    var $menu = null;//用于放置正文的菜单
+    var $articleMenu = null;//用于放置右侧栏的菜单
+
+    buildTree();//构建树状结构
+    $menu = createDom(hdTree, null);//构建右侧栏菜单
+    $articleMenu = createArticleMenuDom(hdTree, null);//构建正文菜单
+    if(hdTree.sub.length>0){
+        //$menuBox.append($menu);//添加右侧栏菜单
+        $articleMenuBox.prepend($articleMenu);//添加正文菜单
+    }
+    //$(document).scroll(onScroll);//另右侧栏菜单跟随滚动
+
+    function buildTree() {
+        var hdArr = [];
+        for (var i = 1; i <= hdMax; i++) {
+            hdArr.push(hdTag + i);
+        }
+        var $hdList = $article.find(hdArr.join(","));
+        var prevLeval = 0;
+        var prevItem = hdTree;
+        $.each($hdList, function (i, hd) {
+            var $hd = $(hd);
+            var hTag = $hd.get(0).tagName.toLowerCase();
+            var hdLeval = parseInt(hTag.replace(/[^\d]/g, ""));
+            var tag = hdTag + hdLeval;
+            var obj = {
+                tag: tag,
+                element: $hd,
+                sub: [],
+                prev: prevItem
+            };
+
+            if (hdLeval === 1) {
+                hdTree.sub.push(obj);
+            } else if (hdLeval > prevLeval) {
+                prevItem.sub.push(obj);
+            } else if (hdLeval <= prevLeval) {
+                treeClosest(obj, hdTag + (hdLeval - 1)).sub.push(obj);
+            }
+            prevLeval = hdLeval;
+            prevItem = obj;
+        });
+
+        function treeClosest(item, tag) {
+            if (item.tag === tag) {
+                return item;
+            } else if (item.prev !== hdTree) {
+                return treeClosest(item.prev, tag);
+            } else {
+                return item;
+            }
+        }
+    }
+
+    function createDom(tree, $parent) {
+        var $menu = $("<div>").addClass("cnblogsMenu");
+        var $mTitle = $("<div>").addClass("mTitle").text("文章目录");
+        var $mList = $("<div>").addClass("mList");
+        if ($parent == null) {
+            $parent = $mList;
+        }
+        $menu.append($mTitle).append($mList);
+        $.each(tree.sub, function (i, obj) {
+            var $item = $("<div>").addClass("mItem").addClass(obj.tag).append(
+                $("<div>").addClass("mText").text(obj.element.text()).data("item", obj).click(onItemClick)
+            ).append(
+                $("<div>").addClass("mSub")
+            );
+            $parent.append($item);
+            createDom(obj, $item.find(".mSub"));
+        });
+        return $menu;
+    }
+
+    function createArticleMenuDom(tree, $parent) {
+        var $menu = $("<div>");
+        var $mTitle = $("<h1>").text("目录");
+        var $mList = $("<ul type='disc'>");
+        if ($parent == null) {
+            $parent = $mList;
+        }
+        $menu.append($mTitle).append($mList);
+        $.each(tree.sub, function (i, obj) {
+            var $item = $("<li>").addClass(obj.tag).append(
+                $("<a>").attr("href","javascript:;").text(obj.element.text()).data("item", obj).click(onItemClick)
+            ).append(
+                $("<ul type='circle'>")
+            );
+            $parent.append($item);
+            createArticleMenuDom(obj, $item.find("ul"));
+        });
+        return $menu;
+    }
+
+    function onItemClick(e) {
+        var obj = $(this).data("item");
+        var ele = obj.element.get(0);
+        var docScrollTop = $(document).scrollTop();
+        var eleTop = ele.getBoundingClientRect().top;
+        var dstScrollTop = docScrollTop + eleTop;
+        var offsetScroollTop = Math.abs(docScrollTop - dstScrollTop);
+        var speed = 3;
+        var time = offsetScroollTop / speed;
+        $("body,html").animate({ scrollTop: dstScrollTop }, time);
+    }
+
+    function onScroll(e) {
+        var top = $menu.get(0).getBoundingClientRect().top;
+        if (top <= 0) {
+            $menu.addClass("fixed");
+        } else {
+            $menu.removeClass("fixed");
+        }
+    }
+  }());
+
+
+
+});
+</script>
+<!--PageBeginHtml Block End-->
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/xxcanghai/"><img id="blogLogo" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/xxcanghai/">小小沧海</a></h1>
+<h2>多写博客常总结，多写代码常看书</h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/saved_resource">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/xxcanghai/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E5%B0%8F%E5%B0%8F%E6%B2%A7%E6%B5%B7">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/xxcanghai/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/xxcanghai/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 59&nbsp; </span>
+<span id="stats_article_count">文章 - 5&nbsp; </span>
+<span id="stats-comment_count">评论 - 545</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/xxcanghai/p/5189353.html">一道常被人轻视的前端JS面试题</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><div><h1>目录</h1><ul type="disc"><li class="h1"><a href="javascript:;">前言</a><ul type="circle"></ul></li><li class="h1"><a href="javascript:;">第一问</a><ul type="circle"></ul></li><li class="h1"><a href="javascript:;">第二问</a><ul type="circle"><li class="h2"><a href="javascript:;">变量声明提升</a><ul type="circle"></ul></li><li class="h2"><a href="javascript:;">函数表达式</a><ul type="circle"></ul></li></ul></li><li class="h1"><a href="javascript:;">第三问</a><ul type="circle"></ul></li><li class="h1"><a href="javascript:;">第四问</a><ul type="circle"></ul></li><li class="h1"><a href="javascript:;">第五问</a><ul type="circle"></ul></li><li class="h1"><a href="javascript:;">第六问</a><ul type="circle"><li class="h2"><a href="javascript:;">构造函数的返回值</a><ul type="circle"></ul></li></ul></li><li class="h1"><a href="javascript:;">第七问</a><ul type="circle"></ul></li><li class="h1"><a href="javascript:;">最后</a><ul type="circle"></ul></li></ul></div><h1>前言</h1>
+<p>年前刚刚离职了，分享下我曾经出过的一道面试题，此题是我出的一套前端面试题中的最后一题，用来考核面试者的JavaScript的综合能力，很可惜到目前为止的将近两年中，几乎没有人能够完全答对，并非多难只是因为大多面试者过于轻视他。</p>
+<p>题目如下：</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> Foo() {
+    getName </span>= <span style="color: #0000ff;">function</span> () { alert (1<span style="color: #000000;">); };
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+}
+Foo.getName </span>= <span style="color: #0000ff;">function</span> () { alert (2<span style="color: #000000;">);};
+Foo.prototype.getName </span>= <span style="color: #0000ff;">function</span> () { alert (3<span style="color: #000000;">);};
+</span><span style="color: #0000ff;">var</span> getName = <span style="color: #0000ff;">function</span> () { alert (4<span style="color: #000000;">);};
+</span><span style="color: #0000ff;">function</span> getName() { alert (5<span style="color: #000000;">);}
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">请写出以下输出结果：</span>
+<span style="color: #000000;">Foo.getName();
+getName();
+Foo().getName();
+getName();
+</span><span style="color: #0000ff;">new</span><span style="color: #000000;"> Foo.getName();
+</span><span style="color: #0000ff;">new</span><span style="color: #000000;"> Foo().getName();
+</span><span style="color: #0000ff;">new</span> <span style="color: #0000ff;">new</span> Foo().getName();</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p>答案是：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;3b892a0c-7dd9-457c-8e87-b31da34c3e51&#39;)"><img id="code_img_closed_3b892a0c-7dd9-457c-8e87-b31da34c3e51" class="code_img_closed" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_3b892a0c-7dd9-457c-8e87-b31da34c3e51" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;3b892a0c-7dd9-457c-8e87-b31da34c3e51&#39;,event)" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_3b892a0c-7dd9-457c-8e87-b31da34c3e51" class="cnblogs_code_hide">
+<pre><span style="color: #000000;">function Foo() {
+    getName </span>= function () { alert (<span style="color: #800080;">1</span><span style="color: #000000;">); };
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+}
+Foo.getName </span>= function () { alert (<span style="color: #800080;">2</span><span style="color: #000000;">);};
+Foo.prototype.getName </span>= function () { alert (<span style="color: #800080;">3</span><span style="color: #000000;">);};
+</span><span style="color: #0000ff;">var</span> getName = function () { alert (<span style="color: #800080;">4</span><span style="color: #000000;">);};
+function getName() { alert (</span><span style="color: #800080;">5</span><span style="color: #000000;">);}
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">答案：</span>
+Foo.getName();<span style="color: #008000;">//</span><span style="color: #008000;">2</span>
+getName();<span style="color: #008000;">//</span><span style="color: #008000;">4</span>
+Foo().getName();<span style="color: #008000;">//</span><span style="color: #008000;">1</span>
+getName();<span style="color: #008000;">//</span><span style="color: #008000;">1</span>
+<span style="color: #0000ff;">new</span> Foo.getName();<span style="color: #008000;">//</span><span style="color: #008000;">2</span>
+<span style="color: #0000ff;">new</span> Foo().getName();<span style="color: #008000;">//</span><span style="color: #008000;">3</span>
+<span style="color: #0000ff;">new</span> <span style="color: #0000ff;">new</span> Foo().getName();<span style="color: #008000;">//</span><span style="color: #008000;">3</span></pre>
+</div>
+<span class="cnblogs_code_collapse">答案</span></div>
+<p>&nbsp;</p>
+<p>此题是我综合之前的开发经验以及遇到的JS各种坑汇集而成。此题涉及的知识点众多，包括变量定义提升、this指针指向、运算符优先级、原型、继承、全局变量污染、对象属性及原型属性优先级等等。</p>
+<p>此题包含7小问，分别说下。</p>
+<h1>第一问</h1>
+<p>先看此题的上半部分做了什么，首先定义了一个叫Foo的函数，之后为Foo创建了一个叫getName的<strong>静态属性</strong>存储了一个匿名函数，之后为Foo的<strong>原型对象</strong>新创建了一个叫getName的匿名函数。之后又通过<strong>函数变量表达式</strong>创建了一个getName的函数，最后再<strong>声明</strong>一个叫getName函数。</p>
+<p>第一问的&nbsp;<span class="cnblogs_code">Foo.getName</span>&nbsp;自然是访问Foo函数上存储的静态属性，自然是2，没什么可说的。</p>
+<h1>第二问</h1>
+<p>第二问，直接调用&nbsp;<span class="cnblogs_code">getName</span>&nbsp;函数。既然是直接调用那么就是访问当前上文作用域内的叫getName的函数，所以跟1 2 3都没什么关系。此题有无数面试者回答为5。此处有两个坑，一是变量声明提升，二是函数表达式。</p>
+<h2><strong>变量声明提升</strong></h2>
+<p>即所有声明变量或声明函数都会被提升到当前函数的顶部。</p>
+<p>例如下代码:</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre>console.log('x' <span style="color: #0000ff;">in</span> window);<span style="color: #008000;">//</span><span style="color: #008000;">true</span>
+<span style="color: #0000ff;">var</span> x;</pre>
+<pre>x = 0;</pre>
+</div>
+<p>代码执行时js引擎会将声明语句提升至代码最上方，变为：</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre><span style="color: #0000ff;">var</span><span style="color: #000000;"> x;
+console.log(</span>'x' <span style="color: #0000ff;">in</span> window);<span style="color: #008000;">//</span><span style="color: #008000;">true</span>
+x = 0;</pre>
+</div>
+<h2><strong>函数表达式</strong></h2>
+<p>&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">var</span> getName</span>&nbsp;与&nbsp;<span class="cnblogs_code">function getName</span>&nbsp;都是声明语句，区别在于&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">var</span> getName</span>&nbsp;是<strong>函数表达式</strong>，而&nbsp;<span class="cnblogs_code">function getName</span>&nbsp;是<strong>函数声明</strong>。关于JS中的各种函数创建方式可以看 <a href="http://www.cnblogs.com/xxcanghai/p/4991870.html" target="_blank">大部分人都会做错的经典JS闭包面试题</a> 这篇文章有详细说明。</p>
+<p>函数表达式最大的问题，在于js会将此代码拆分为两行代码分别执行。</p>
+<p>例如下代码：</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre>console.log(x);<span style="color: #008000;">//</span><span style="color: #008000;">输出：function x(){}</span>
+<span style="color: #0000ff;">var</span> x=1<span style="color: #000000;">;
+</span><span style="color: #0000ff;">function</span> x(){}</pre>
+</div>
+<p>实际执行的代码为，先将&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">var</span> x=<span style="color: #800080;">1</span></span>&nbsp;拆分为&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">var</span> x;</span>&nbsp;和&nbsp;<span class="cnblogs_code">x = <span style="color: #800080;">1</span>;</span>&nbsp;两行，再将&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">var</span> x;</span>&nbsp;和&nbsp;<span class="cnblogs_code">function x(){}</span>&nbsp;两行提升至最上方变成：</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre><span style="color: #0000ff;">var</span><span style="color: #000000;"> x;
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> x(){}
+console.log(x);
+x</span>=1;</pre>
+</div>
+<p>所以最终函数声明的x覆盖了变量声明的x，log输出为x函数。</p>
+<p>同理，原题中代码最终执行时的是：</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> Foo() {
+    getName </span>= <span style="color: #0000ff;">function</span> () { alert (1<span style="color: #000000;">); };
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+}
+</span><span style="color: #0000ff;">var</span> getName;<span style="color: #008000;">//</span><span style="color: #008000;">只提升变量声明</span>
+<span style="color: #0000ff;">function</span> getName() { alert (5);}<span style="color: #008000;">//</span><span style="color: #008000;">提升函数声明，覆盖var的声明</span>
+<span style="color: #000000;">
+Foo.getName </span>= <span style="color: #0000ff;">function</span> () { alert (2<span style="color: #000000;">);};
+Foo.prototype.getName </span>= <span style="color: #0000ff;">function</span> () { alert (3<span style="color: #000000;">);};
+getName </span>= <span style="color: #0000ff;">function</span> () { alert (4);};<span style="color: #008000;">//</span><span style="color: #008000;">最终的赋值再次覆盖function getName声明</span>
+<span style="color: #000000;">
+getName();</span><span style="color: #008000;">//最终输出</span><span style="color: #008000;">4</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<h1>第三问</h1>
+<p>第三问的&nbsp;<span class="cnblogs_code">Foo().getName();</span>&nbsp;先执行了Foo函数，然后调用Foo函数的返回值对象的getName属性函数。</p>
+<p>Foo函数的第一句&nbsp;<span class="cnblogs_code"> getName = function () { alert (<span style="color: #800080;">1</span>); };</span>&nbsp; 是一句函数赋值语句，注意它没有var声明，所以先向当前Foo函数作用域内寻找getName变量，没有。再向当前函数作用域上层，即外层作用域内寻找是否含有getName变量，找到了，也就是第二问中的alert(4)函数，将此变量的值赋值为&nbsp;<span class="cnblogs_code">function(){alert(<span style="color: #800080;">1</span>)}。</span>&nbsp;</p>
+<p><strong>此处实际上是将外层作用域内的getName函数修改了。</strong></p>
+<blockquote>
+<p>注意：此处若依然没有找到会一直向上查找到window对象，若window对象中也没有getName属性，就在window对象中创建一个getName变量。</p>
+</blockquote>
+<p>之后Foo函数的返回值是this，而JS的this问题博客园中已经有非常多的文章介绍，这里不再多说。</p>
+<p><strong>简单</strong>的讲，<strong>this的指向是由所在函数的调用方式决定的</strong>。而此处的直接调用方式，this指向window对象。</p>
+<p>遂Foo函数返回的是window对象，相当于执行&nbsp;<span class="cnblogs_code">window.getName()</span>&nbsp;，而window中的getName已经被修改为alert(1)，所以最终会输出1</p>
+<p>此处考察了两个知识点，一个是变量作用域问题，一个是this指向问题。</p>
+<h1>第四问</h1>
+<p>直接调用getName函数，相当于&nbsp;<span class="cnblogs_code">window.getName()</span>&nbsp;，因为这个变量已经被Foo函数执行时修改了，遂结果与第三问相同，为1</p>
+<h1>第五问</h1>
+<p>第五问&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">new</span> Foo.getName();</span>&nbsp;,此处考察的是js的运算符优先级问题。</p>
+<p>&nbsp;</p>
+<p><strong>js运算符优先级:</strong></p>
+<p><a href="http://images2015.cnblogs.com/blog/746158/201602/746158-20160214172948591-1509302580.png"><img style="background-image: none; padding-top: 0px; padding-left: 0px; margin: 0px; display: inline; padding-right: 0px; border: 0px;" title="image_thumb" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/746158-20160214172949325-418813184.png" alt="image_thumb" border="0"></a></p>
+<p>参考链接：<a title="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence</a></p>
+<p>&nbsp;</p>
+<p>通过查上表可以得知点（.）的优先级高于new操作，遂相当于是:</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre><span style="color: #0000ff;">new</span> (Foo.getName)();</pre>
+</div>
+<p>所以实际上将getName函数作为了构造函数来执行，遂弹出2。</p>
+<h1>第六问</h1>
+<p>第六问&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">new</span> Foo().getName()</span>&nbsp;，首先看运算符优先级括号高于new，实际执行为</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre>(<span style="color: #0000ff;">new</span> Foo()).getName()</pre>
+</div>
+<p>遂先执行Foo函数，而Foo此时作为构造函数却有返回值，所以这里需要说明下js中的构造函数返回值问题。</p>
+<h2><strong>构造函数的返回值</strong></h2>
+<p>在传统语言中，构造函数不应该有返回值，实际执行的返回值就是此构造函数的实例化对象。</p>
+<p>而在js中构造函数可以有返回值也可以没有。</p>
+<p>1、没有返回值则按照其他语言一样返回实例化对象。</p>
+<p><a href="http://images2015.cnblogs.com/blog/746158/201602/746158-20160214172949872-44719675.png"><img style="background-image: none; padding-top: 0px; padding-left: 0px; margin: 0px; display: inline; padding-right: 0px; border: 0px;" title="image_thumb1" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/746158-20160214172950685-343542103.png" alt="image_thumb1" border="0"></a></p>
+<p>2、若有返回值则检查其返回值是否为<strong>引用类型</strong>。如果是非引用类型，如基本类型（string,number,boolean,null,undefined）则与无返回值相同，实际返回其实例化对象。</p>
+<p><a href="http://images2015.cnblogs.com/blog/746158/201602/746158-20160214172951138-1692286318.png"><img style="background-image: none; padding-top: 0px; padding-left: 0px; margin: 0px; display: inline; padding-right: 0px; border: 0px;" title="image_thumb2" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/746158-20160214172952435-211077752.png" alt="image_thumb2" border="0"></a></p>
+<p>3、若返回值是引用类型，则实际返回值为这个引用类型。</p>
+<p><a href="http://images2015.cnblogs.com/blog/746158/201602/746158-20160214172953450-1781870442.png"><img style="background-image: none; padding-top: 0px; padding-left: 0px; display: inline; padding-right: 0px; border: 0px;" title="image_thumb3" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/746158-20160214172953888-1817669513.png" alt="image_thumb3" border="0"></a></p>
+<p>原题中，返回的是this，而this在构造函数中本来就代表当前实例化对象，遂最终Foo函数返回实例化对象。</p>
+<p>之后调用实例化对象的getName函数，因为在Foo构造函数中没有为实例化对象添加任何属性，遂到当前对象的原型对象（prototype）中寻找getName，找到了。</p>
+<p>遂最终输出3。</p>
+<h1>第七问</h1>
+<p>第七问,&nbsp;<span class="cnblogs_code"><span style="color: #0000ff;">new</span> <span style="color: #0000ff;">new</span> Foo().getName();</span>&nbsp;同样是运算符优先级问题。</p>
+<p>最终实际执行为：</p>
+<div class="cnblogs_code" style="background-color: #f5f5f5; border: #cccccc 1px solid; padding: 5px;">
+<pre><span style="color: #0000ff;">new</span> ((<span style="color: #0000ff;">new</span> Foo()).getName)();</pre>
+</div>
+<p>先初始化Foo的实例化对象，然后将其原型上的getName函数作为构造函数再次new。</p>
+<p>遂最终结果为3</p>
+<p>===2016年03月23日更新===</p>
+<p>这里引用 @于明昊 的评论，更详细的解释了第7问：</p>
+<p>这里确实是(new Foo()).getName()，但是跟括号优先级高于成员访问没关系，实际上这里成员访问的优先级是最高的，因此先执行了 .getName，但是在进行左侧取值的时候， new Foo() 可以理解为两种运算：new 带参数（即 new Foo()）和函数调用（即 先 Foo() 取值之后再 new），而 new 带参数的优先级是高于函数调用的，因此先执行了 new Foo()，或得 Foo 类的实例对象，再进行了成员访问 .getName。</p>
+<h1>最后</h1>
+<p>就答题情况而言，第一问100%都可以回答正确，第二问大概只有50%正确率，第三问能回答正确的就不多了，第四问再正确就非常非常少了。其实此题并没有太多刁钻匪夷所思的用法，都是一些可能会遇到的场景，而大多数人但凡有1年到2年的工作经验都应该完全正确才对。</p>
+<p>只能说有一些人太急躁太轻视了，希望大家通过此文了解js一些特性。</p>
+<p>并祝愿大家在新的一年找工作面试中胆大心细，发挥出最好的水平，找到一份理想的工作。</p>
+<p>&nbsp;</p>
+<p><span style="color: transparent;">原文链接：http://www.cnblogs.com/xxcanghai/p/5189353.html</span></p></div><div id="MySignature" style="display: block;"><p><b>如果您认为本文对得起您所阅读他所花的时间，欢迎点击右下角↘ <span style="color: red">推荐</span>。您的支持是我继续写作最大的动力，谢谢</b></p>
+<p style="margin-top: 50px; background: rgb(230, 250, 230); padding: 10px 10px 10px 10px; border: 1px dashed rgb(224, 224, 224); text-indent: 0;">
+作者：<a href="http://www.cnblogs.com/xxcanghai/" target="_blank">小小沧海</a>
+<br>
+出处：<a href="http://www.cnblogs.com/xxcanghai/" target="_blank">http://www.cnblogs.com/xxcanghai/</a>
+<br>
+本文地址：<a id="xxch_currentpageurl" href="http://www.cnblogs.com/xxcanghai/" target="_blank">http://www.cnblogs.com/xxcanghai/</a>
+<br>
+本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。 
+<img style="display: none" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/saved_resource">
+</p>
+</div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/xxcanghai/category/679999.html" target="_blank">JavaScript</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5189353,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;1dd1c454-cde4-e411-b908-9dcfd8948a71&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/xxcanghai/" target="_blank"><img src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/20150417145005.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/xxcanghai/">小小沧海</a><br>
+            <a href="http://home.cnblogs.com/u/xxcanghai/followees">关注 - 35</a><br>
+            <a href="http://home.cnblogs.com/u/xxcanghai/followers">粉丝 - 779</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;1dd1c454-cde4-e411-b908-9dcfd8948a71&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5189353,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">197</span>
+    </div>
+    <div class="buryit" onclick="votePost(5189353,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">7</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/xxcanghai/p/5178177.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/xxcanghai/p/5178177.html" title="发布于2016-02-02 17:41">使用正则实现字符去重及多行去重</a><br><a href="http://www.cnblogs.com/xxcanghai/p/5205998.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/xxcanghai/p/5205998.html" title="发布于2016-02-22 01:30">2016十家公司前端面试小记</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2016-02-14 17:30</span> <a href="http://www.cnblogs.com/xxcanghai/">小小沧海</a> 阅读(<span id="post_view_count">58231</span>) 评论(<span id="post_comment_count">114</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5189353" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#" onclick="AddToWz(5189353);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=223719,cb_entryId=5189353,cb_blogApp=currentBlogApp,cb_blogUserGuid='1dd1c454-cde4-e411-b908-9dcfd8948a71',cb_entryCreatedDate='2016/2/14 17:30:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"><div class="pager"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#!comments" onclick="commentManager.renderComments(2,50);return false;">&lt; Prev</a><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#!comments" onclick="commentManager.renderComments(1,50);return false;">1</a><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#!comments" onclick="commentManager.renderComments(2,50);return false;">2</a><span class="current">3</span></div></div>
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542199" class="layer">#101楼</a><a name="3542199" id="comment_anchor_3542199"></a>  <span class="comment_date">2016-10-27 15:23</span> <a id="a_comment_author_3542199" href="http://www.cnblogs.com/cangkukuaimanle/" target="_blank">cangkukuaimanle</a> <a href="http://msg.cnblogs.com/send/cangkukuaimanle" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3542199" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542176" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3542176);">@</a>
+initial-wu<br>何谓优先级，优先级高的优先执行，优先级低的在后执行，顺次执行，后面的覆盖前面的。<br>这里的优先权不知道什么意思<br>如果函数声明的优先级高于变量声明的，那变量声明会覆盖函数声明？事实是函数声明会覆盖变量声明。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3542199,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3542199,&#39;Bury&#39;,this)">反对(6)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542213" class="layer">#102楼</a><a name="3542213" id="comment_anchor_3542213"></a>  <span class="comment_date">2016-10-27 15:34</span> <a id="a_comment_author_3542213" href="http://www.cnblogs.com/initial-wu/" target="_blank">initial-wu</a> <a href="http://msg.cnblogs.com/send/initial-wu" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3542213" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542199" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3542199);">@</a>
+cangkukuaimanle<br>这个我也说过了<br>对于同名的变量声明，Javascript采用的是忽略原则，后声明的会被忽略，变量声明和赋值操作可以写在一起，但是只有声明会被提升，提升后变量的值默认为undefined，结果是在赋值操作执行前变量的值必为undefined<br>对于同名的函数声明，Javascript采用的是覆盖原则，先声明的会被覆盖，因为函数在声明时会指定函数的内容，所以同一作用域下一系列同名函数声明的最终结果是调用时函数的内容和最后一次函数声明相同<br>对于同名的函数声明和变量声明，采用的是忽略原则，由于在提升时函数声明会提升到变量声明之前，变量声明一定会被忽略，所以结果是函数声明有效</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3542213,&#39;Digg&#39;,this)">支持(2)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3542213,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542243" class="layer">#103楼</a><a name="3542243" id="comment_anchor_3542243"></a>  <span class="comment_date">2016-10-27 15:50</span> <a id="a_comment_author_3542243" href="http://www.cnblogs.com/cangkukuaimanle/" target="_blank">cangkukuaimanle</a> <a href="http://msg.cnblogs.com/send/cangkukuaimanle" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3542243" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542213" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3542213);">@</a>
+initial-wu<br>不扯了 一会忽略一会覆盖的，不知道是不是你自己的理解，这样多让广大js使用者晕头转向，言简意赅如101楼，有疑问的F12自己试试吧，忙了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3542243,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3542243,&#39;Bury&#39;,this)">反对(1)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542246" class="layer">#104楼</a><a name="3542246" id="comment_anchor_3542246"></a>  <span class="comment_date">2016-10-27 15:52</span> <a id="a_comment_author_3542246" href="http://www.cnblogs.com/initial-wu/" target="_blank">initial-wu</a> <a href="http://msg.cnblogs.com/send/initial-wu" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3542246" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542243" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3542243);">@</a>
+cangkukuaimanle<br>有兴趣的话推荐你看看《你不知道的Javascript》<br>上卷详细讲了变量和作用域的问题</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3542246,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3542246,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3542605" class="layer">#105楼</a><a name="3542605" id="comment_anchor_3542605"></a>  <span class="comment_date">2016-10-27 21:56</span> <a id="a_comment_author_3542605" href="http://www.cnblogs.com/danielweb/" target="_blank">DanielLam</a> <a href="http://msg.cnblogs.com/send/DanielLam" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3542605" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3540915" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3540915);">@</a>
+initial-wu<br>你这样说的比楼主的清楚多了，赞~！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3542605,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3542605,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3543417" class="layer">#106楼</a><a name="3543417" id="comment_anchor_3543417"></a>  <span class="comment_date">2016-10-28 20:09</span> <a id="a_comment_author_3543417" href="http://www.cnblogs.com/shi0090/" target="_blank">劼哥stone</a> <a href="http://msg.cnblogs.com/send/%E5%8A%BC%E5%93%A5stone" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3543417" class="blog_comment_body">最近研究JavaScript比较多，一不小心全做对了。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3543417,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3543417,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3543417_avatar" style="display:none;">http://pic.cnblogs.com/face/326028/20161116011915.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3545748" class="layer">#107楼</a><a name="3545748" id="comment_anchor_3545748"></a>  <span class="comment_date">2016-11-01 16:46</span> <a id="a_comment_author_3545748" href="http://home.cnblogs.com/u/1054887/" target="_blank">唐强136</a> <a href="http://msg.cnblogs.com/send/%E5%94%90%E5%BC%BA136" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3545748" class="blog_comment_body">我能弱弱的说一句，我做对了么。。。。。但是感觉招工作的过程中，很少考到。。。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3545748,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3545748,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3556023" class="layer">#108楼</a><a name="3556023" id="comment_anchor_3556023"></a>  <span class="comment_date">2016-11-15 10:35</span> <a id="a_comment_author_3556023" href="http://home.cnblogs.com/u/1035808/" target="_blank">小不了</a> <a href="http://msg.cnblogs.com/send/%E5%B0%8F%E4%B8%8D%E4%BA%86" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3556023" class="blog_comment_body">请问可以转载吗？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3556023,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3556023,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3556040" class="layer">#109楼</a><a name="3556040" id="comment_anchor_3556040"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2016-11-15 10:44</span> <a id="a_comment_author_3556040" href="http://www.cnblogs.com/xxcanghai/" target="_blank">小小沧海</a> <a href="http://msg.cnblogs.com/send/%E5%B0%8F%E5%B0%8F%E6%B2%A7%E6%B5%B7" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3556040" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3556023" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3556023);">@</a>
+小不了<br>注明来源即可</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3556040,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3556040,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3556040_avatar" style="display:none;">http://pic.cnblogs.com/face/746158/20150417145005.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3563519" class="layer">#110楼</a><a name="3563519" id="comment_anchor_3563519"></a>  <span class="comment_date">2016-11-23 22:01</span> <a id="a_comment_author_3563519" href="http://home.cnblogs.com/u/544118/" target="_blank">舞蹈与网络</a> <a href="http://msg.cnblogs.com/send/%E8%88%9E%E8%B9%88%E4%B8%8E%E7%BD%91%E7%BB%9C" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3563519" class="blog_comment_body">```<br>2<br>5   我瞎，考虑了提升，没考虑覆盖<br>1<br>2   Foo()运行过后，原来的 被 Foo()内的覆盖<br>2   其实也有点不明白，排除法得到的<br>2   new Foo() 后只能在原型链内找，啊呀我去我好瞎，原型链上是3<br>1   有点不懂，不过觉得应该是全局里的<br>```<br>我眼睛比较瞎，明明只有最后一个错了，结果眼瞎错了三个</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3563519,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3563519,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3571682" class="layer">#111楼</a><a name="3571682" id="comment_anchor_3571682"></a>  <span class="comment_date">2016-12-04 13:34</span> <a id="a_comment_author_3571682" href="http://home.cnblogs.com/u/663574/" target="_blank">锋云战锦</a> <a href="http://msg.cnblogs.com/send/%E9%94%8B%E4%BA%91%E6%88%98%E9%94%A6" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3571682" class="blog_comment_body"><div class="cnblogs_Highlighter sh-gutter"><pre class="gutter:true;brush:javascript">console.log(p);var p=233;function p(){alert(2333)};console.log(p);//输出p函数体，然后控制台输出233
+console.log(p);function p(){alert(2333)};var p=233;console.log(p);//输出p函数体，然后控制台输出233
+</pre></div><br><br>---<br><div class="cnblogs_Highlighter sh-gutter"><pre class="gutter:true;brush:javascript">var p=233;console.log(p);function p(){alert(2333)};console.log(p);//输出233;233
+function p(){alert(2333)};console.log(p);var p=233;console.log(p);//输出p函数体;然后233
+p();var p=233;function p(){alert(2333)};console.log(p);//先alert2333,再控制台输入233
+</pre></div><br><br>说明最顶层先是函数声明，后面的赋值才改变了同名变量。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3571682,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3571682,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3613748" class="layer">#112楼</a><a name="3613748" id="comment_anchor_3613748"></a>  <span class="comment_date">2017-02-07 19:43</span> <a id="a_comment_author_3613748" href="http://home.cnblogs.com/u/1102677/" target="_blank">cuncunjun</a> <a href="http://msg.cnblogs.com/send/cuncunjun" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3613748" class="blog_comment_body">求问：圆括号优先级高于点运算符高于new 第五问: 为什么不是new(Foo.getName())当然这样会出错 第六问: 为什么不是new(Foo().getName())</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3613748,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3613748,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3627451" class="layer">#113楼</a><a name="3627451" id="comment_anchor_3627451"></a>  <span class="comment_date">2017-02-27 14:25</span> <a id="a_comment_author_3627451" href="http://www.cnblogs.com/paradiselin/" target="_blank">PARADISELIN</a> <a href="http://msg.cnblogs.com/send/PARADISELIN" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3627451" class="blog_comment_body">求问楼主，在第二问中，function关键字的声明不是高于var吗？求指导：<br><br><br><br><div class="cnblogs_Highlighter sh-gutter"><pre class="gutter:true;brush:javascript">function Foo() {
+    getName = function () { alert (1); };
+    return this;
+}
+
+function getName() { alert (5);}//提升函数声明
+var getName;//此时变量对象里面已经有getName属性，所以不作处理
+
+
+Foo.getName = function () { alert (2);};
+Foo.prototype.getName = function () { alert (3);};
+getName = function () { alert (4);};//最终的赋值再次覆盖function getName声明
+
+getName();//最终输出4
+</pre></div></div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3627451,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3627451,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3627451_avatar" style="display:none;">http://pic.cnblogs.com/face/832967/20151106103023.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3674720" class="layer">#114楼</a><a name="3674720" id="comment_anchor_3674720"></a><span id="comment-maxId" style="display:none;">3674720</span><span id="comment-maxDate" style="display:none;">2017/4/23 11:50:56</span>  <span class="comment_date">2017-04-23 11:50</span> <a id="a_comment_author_3674720" href="http://www.cnblogs.com/zhaohuiziwo901/" target="_blank">特拉法尔加</a> <a href="http://msg.cnblogs.com/send/%E7%89%B9%E6%8B%89%E6%B3%95%E5%B0%94%E5%8A%A0" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3674720" class="blog_comment_body"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#3627451" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3627451);">@</a>
+PARADISELIN<br><div class="cnblogs_Highlighter sh-gutter"><pre class="gutter:true;brush:javascript">		// function x(){}
+		// var x;
+		// console.log(x); // function x(){}
+
+
+		// var x;
+		// function x(){}
+		// console.log(x); // function x(){}
+
+		// var x = 1;
+		// function x(){}
+		// console.log(x); // 1
+
+		// function x(){}
+		// var x = 1;
+		// console.log(x); //1
+
+
+</pre></div><br>结论：只定义不赋值时function优先级比var高，而在后期对x赋值时即使是函数也会被覆盖，上面代码中后两种情况的console是在x=1之后执行的，执行的时候x已经被覆盖了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3674720,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3674720,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3674720_avatar" style="display:none;">http://pic.cnblogs.com/face/776655/20150908165212.png</span>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"><div class="pager"><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#!comments" onclick="commentManager.renderComments(2,50);return false;">&lt; Prev</a><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#!comments" onclick="commentManager.renderComments(1,50);return false;">1</a><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#!comments" onclick="commentManager.renderComments(2,50);return false;">2</a><span class="current">3</span></div></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/saved_resource">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://www.gcpowertools.com.cn/products/activereports/excel.htm?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=AR&amp;utm_campaign=community" target="_blank">【报表】Excel 报表开发18 招式，人人都能做报表</a><br><a href="http://click.aliyun.com/m/15483" target="_blank">【活动】阿里云海外云服务全面降价助力企业全球布局</a><br><a href="https://group.cnblogs.com/topic/76829.html" target="_blank">【实用】40+篇云服务器操作及运维基础知识！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cn.udacity.com/course/deep-learning-nanodegree-foundation--nd101/?utm_source=cnblogs&amp;utm_medium=referral&amp;utm_campaign=DLND03" target="_blank"><img width="300" height="250" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/24442-20170517165836135-1248276195.jpg" alt="深度学习0519"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/569600/" target="_blank">iOS版Gmail新增“智能回复”功能</a><br> ·  <a href="http://news.cnblogs.com/n/569594/" target="_blank">天使投资人沈博阳：创业公司招人、留人、开人的方法</a><br> ·  <a href="http://news.cnblogs.com/n/569581/" target="_blank">盘点历届谷歌I/O大会发布的“失败品”：谷歌眼镜、模块化手机等</a><br> ·  <a href="http://news.cnblogs.com/n/569599/" target="_blank">顺丰接盘百度外卖？知情人士：百度不会放弃外卖 仍将控股</a><br> ·  <a href="http://news.cnblogs.com/n/569597/" target="_blank">人工智能该如何走向现实应用？还得看谷歌</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="http://click.aliyun.com/m/17215/" target="_blank"><img width="468" height="60" src="./一道常被人轻视的前端JS面试题 - 小小沧海 - 博客园_files/24442-20170417123605337-535991337.jpg" alt="阿里云E4"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br> ·  <a href="http://kb.cnblogs.com/page/566318/" target="_blank">我为什么鼓励工程师写blog</a><br> ·  <a href="http://kb.cnblogs.com/page/566528/" target="_blank">怎么轻松学习JavaScript</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><style>
+.user_profile {
+    color: #333;
+    line-height: 1.8em;
+}
+.user_profile li {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    list-style: outside none none;
+}
+.text_gray {
+    color: gray;
+}
+</style>
+<div>
+<ul class="user_profile" id="user_profile">
+     <li><span class="text_gray">姓名：</span>沧海</li>
+     <li><span class="text_gray">联系我：</span>xxcanghai@gmail.com</li>
+     <li><span class="text_gray">自我介绍：</span>JS前端开发，网络工程专业，致力于推广TypeScript，正在学习NodeJs，VueJs。 <a href="http://www.cnblogs.com/xxcanghai/p/5787258.html" style="color: #21759b;">工作机会</a></li>
+</ul>
+</div><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/xxcanghai/">小小沧海</a><br>园龄：<a href="http://home.cnblogs.com/u/xxcanghai/" title="入园时间：2015-04-17">2年1个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/xxcanghai/followers/">779</a><br>关注：<a href="http://home.cnblogs.com/u/xxcanghai/followees/">35</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;1dd1c454-cde4-e411-b908-9dcfd8948a71&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_toptags" class="sidebar-block">
+<div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/xxcanghai/tag/Vue.js/">Vue.js</a>(5)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/Vue/">Vue</a>(5)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/TypeScript/">TypeScript</a>(3)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/%E7%AC%94%E8%AE%B0/">笔记</a>(2)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/Express/">Express</a>(2)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/Node/">Node</a>(2)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/nodejs/">nodejs</a>(1)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/Number/">Number</a>(1)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/nw.js/">nw.js</a>(1)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/parseFloat/">parseFloat</a>(1)</li><li><a href="http://www.cnblogs.com/xxcanghai/tag/">更多</a></li>
+</ul>
+</div></div><div id="sidebar_categories">
+<div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+<h3 class="catListTitle">随笔分类<span style="font-size:11px;font-weight:normal">(78)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/xxcanghai/category/701938.html">BAT批处理(17)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/xxcanghai/category/757473.html">C#Winform程序(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/xxcanghai/category/701952.html">fixIE(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/xxcanghai/category/679999.html">JavaScript(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/xxcanghai/category/879022.html">Node.js(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/xxcanghai/category/735445.html">TypeScript(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/xxcanghai/category/701940.html">VirtualBox虚拟机</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/xxcanghai/category/879021.html">Vue.js(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/xxcanghai/category/879029.html">WebView</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/xxcanghai/category/701939.html">电脑相关(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="http://www.cnblogs.com/xxcanghai/category/679994.html">日常(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="http://www.cnblogs.com/xxcanghai/category/701937.html">未解之谜(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="http://www.cnblogs.com/xxcanghai/category/785631.html">正则表达式</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案<span style="font-size:11px;font-weight:normal">(59)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/xxcanghai/archive/2017/05.html">2017年5月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/xxcanghai/archive/2017/03.html">2017年3月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/xxcanghai/archive/2017/02.html">2017年2月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/xxcanghai/archive/2016/12.html">2016年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/xxcanghai/archive/2016/11.html">2016年11月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/xxcanghai/archive/2016/10.html">2016年10月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/xxcanghai/archive/2016/09.html">2016年9月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/xxcanghai/archive/2016/08.html">2016年8月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/xxcanghai/archive/2016/05.html">2016年5月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/xxcanghai/archive/2016/04.html">2016年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/xxcanghai/archive/2016/03.html">2016年3月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/xxcanghai/archive/2016/02.html">2016年2月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/xxcanghai/archive/2016/01.html">2016年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/xxcanghai/archive/2015/12.html">2015年12月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/xxcanghai/archive/2015/11.html">2015年11月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/xxcanghai/archive/2015/09.html">2015年9月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="http://www.cnblogs.com/xxcanghai/archive/2015/07.html">2015年7月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="http://www.cnblogs.com/xxcanghai/archive/2015/06.html">2015年6月 (23)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="http://www.cnblogs.com/xxcanghai/archive/2015/04.html">2015年4月 (1)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_articlearchive" class="catListArticleArchive sidebar-block">
+<h3 class="catListTitle">文章档案<span style="font-size:11px;font-weight:normal">(5)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_2_Link_0" href="http://www.cnblogs.com/xxcanghai/archives/2016/06.html" rel="nofollow">2016年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_2_Link_1" href="http://www.cnblogs.com/xxcanghai/archives/2016/02.html" rel="nofollow">2016年2月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_2_Link_2" href="http://www.cnblogs.com/xxcanghai/archives/2016/01.html" rel="nofollow">2016年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_2_Link_3" href="http://www.cnblogs.com/xxcanghai/archives/2015/12.html" rel="nofollow">2015年12月 (2)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_朋友的博客" class="catList朋友的博客 sidebar-block">
+<h3 class="catListTitle">友情链接</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_3_Link_0" href="http://www.cnblogs.com/lmy-ms/" rel="nofollow" target="_blank">李明月的博客</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_1" href="http://www.devmeng.com/" rel="nofollow" target="_blank">孟谦</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	67191
+	</li>
+	<li class="liRank">
+		排名 -	4044
+	</li>
+</ul>
+</div>
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xxcanghai/p/6124699.html#3694562">1. Re:如何在Vue2中实现组件props双向绑定</a></li>
+        <li class="recent_comment_body">@小小沧海 vue2.3.0+又把sync加回来了,参见<a href="http://www.cnblogs.com/xxcanghai/p/5189353.html" target="_blank"></a></li>
+        <li class="recent_comment_author">--风车车jerry</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xxcanghai/p/6124699.html#3692306">2. Re:如何在Vue2中实现组件props双向绑定</a></li>
+        <li class="recent_comment_body">这不是绕来绕去还是通过事件解决的嘛myResult(val){ //xxcanghai 小小沧海 博客园 this.$emit("on-result-cha......</li>
+        <li class="recent_comment_author">--不曾潇洒</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xxcanghai/p/6845160.html#3690872">3. Re:使用JS开发桌面端应用程序NW.js-1-Menu菜单的使用小记</a></li>
+        <li class="recent_comment_body">学习了。</li>
+        <li class="recent_comment_author">--坤坤</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xxcanghai/p/6845160.html#3690796">4. Re:使用JS开发桌面端应用程序NW.js-1-Menu菜单的使用小记</a></li>
+        <li class="recent_comment_body">@rmit.Sunny引用桌面程序为什么要用JS，有什么优势呢我会说因为公司不想招C++程序员了么？（笑其实因为只是要做一个网站的桌面端壳子而已，所以用JS来做也未必不是一种好的选择...</li>
+        <li class="recent_comment_author">--小小沧海</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xxcanghai/p/6845160.html#3690767">5. Re:使用JS开发桌面端应用程序NW.js-1-Menu菜单的使用小记</a></li>
+        <li class="recent_comment_body">@leetao94引用为啥不用Electron~因为要兼容XP系统...</li>
+        <li class="recent_comment_author">--小小沧海</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html">1. 一道常被人轻视的前端JS面试题(58230)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/4991870.html">2. 大部分人都会做错的经典JS闭包面试题(30671)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/5205998.html">3. 2016十家公司前端面试小记(27345)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/6124699.html">4. 如何在Vue2中实现组件props双向绑定(8321)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/5032447.html">5. Visual Studio 2015初体验——前端开发工作的问题(6981)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/xxcanghai/p/5205998.html">1. 2016十家公司前端面试小记(116)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html">2. 一道常被人轻视的前端JS面试题(114)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/4991870.html">3. 大部分人都会做错的经典JS闭包面试题(112)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/5032447.html">4. Visual Studio 2015初体验——前端开发工作的问题(60)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/4998076.html">5. 千万不要在JS中使用连等赋值操作(35)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/xxcanghai/p/5205998.html">1. 2016十家公司前端面试小记(200)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/5189353.html">2. 一道常被人轻视的前端JS面试题(197)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/4991870.html">3. 大部分人都会做错的经典JS闭包面试题(118)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/4998076.html">4. 千万不要在JS中使用连等赋值操作(21)</a></li><li><a href="http://www.cnblogs.com/xxcanghai/p/5032447.html">5. Visual Studio 2015初体验——前端开发工作的问题(17)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 小小沧海
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+<!--PageEndHtml Block Begin-->
+<script>
+
+$(function(){
+  //设定签名的url地址
+  //document.getElementById("xxch_currentpageurl").href=location.href;
+  //document.getElementById("xxch_currentpageurl").innerText=location.href;
+});
+</script>
+<!--PageEndHtml Block End-->
+
+
+<audio controls="controls" style="display: none;"></audio><script src="http://common.cnblogs.com/script/sh/shBrushJScript.js" type="text/javascript"></script><script src="http://common.cnblogs.com/script/sh/shBrushJScript.js" type="text/javascript"></script><script src="http://common.cnblogs.com/script/sh/shBrushJScript.js" type="text/javascript"></script><script src="http://common.cnblogs.com/script/sh/shBrushJScript.js" type="text/javascript"></script></body><style type="text/css">#yddContainer{display:block;font-family:Microsoft YaHei;position:relative;width:100%;height:100%;top:-4px;left:-4px;font-size:12px;border:1px solid}#yddTop{display:block;height:22px}#yddTopBorderlr{display:block;position:static;height:17px;padding:2px 28px;line-height:17px;font-size:12px;color:#5079bb;font-weight:bold;border-style:none solid;border-width:1px}#yddTopBorderlr .ydd-sp{position:absolute;top:2px;height:0;overflow:hidden}.ydd-icon{left:5px;width:17px;padding:0px 0px 0px 0px;padding-top:17px;background-position:-16px -44px}.ydd-close{right:5px;width:16px;padding-top:16px;background-position:left -44px}#yddKeyTitle{float:left;text-decoration:none}#yddMiddle{display:block;margin-bottom:10px}.ydd-tabs{display:block;margin:5px 0;padding:0 5px;height:18px;border-bottom:1px solid}.ydd-tab{display:block;float:left;height:18px;margin:0 5px -1px 0;padding:0 4px;line-height:18px;border:1px solid;border-bottom:none}.ydd-trans-container{display:block;line-height:160%}.ydd-trans-container a{text-decoration:none;}#yddBottom{position:absolute;bottom:0;left:0;width:100%;height:22px;line-height:22px;overflow:hidden;background-position:left -22px}.ydd-padding010{padding:0 10px}#yddWrapper{color:#252525;z-index:10001;background:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ab20.png);}#yddContainer{background:#fff;border-color:#4b7598}#yddTopBorderlr{border-color:#f0f8fc}#yddWrapper .ydd-sp{background-image:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ydd-sprite.png)}#yddWrapper a,#yddWrapper a:hover,#yddWrapper a:visited{color:#50799b}#yddWrapper .ydd-tabs{color:#959595}.ydd-tabs,.ydd-tab{background:#fff;border-color:#d5e7f3}#yddBottom{color:#363636}#yddWrapper{min-width:250px;max-width:400px;}</style></html>
